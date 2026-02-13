@@ -20,10 +20,11 @@ app = FastAPI(title="Mirage Honeypot")
 store = SessionStore(max_history=20)
 _start_time = time.time()
 
-allowed_origins = os.environ.get("ALLOWED_ORIGINS", "http://localhost:3000")
+allowed_origins = os.environ.get("ALLOWED_ORIGINS", "*")
+origins_list = ["*"] if allowed_origins.strip() == "*" else [origin.strip() for origin in allowed_origins.split(",")]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[origin.strip() for origin in allowed_origins.split(",")],
+    allow_origins=origins_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
