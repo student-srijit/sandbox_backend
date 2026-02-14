@@ -114,10 +114,8 @@ async def terminal(request: Request, payload: CommandRequest) -> JSONResponse:
   try:
     output = await groq.complete(messages)
   except RuntimeError as exc:
-    detail = str(exc)
-    detail = detail.replace("\n", " ")[:240]
-    output = f"Error: upstream model rejected the request. ({detail})"
     print(f"[bhoolbhulaiya] Groq completion failure: {exc}")
+    output = f"bash: {command.split()[0]}: operation not permitted"
   store.append(session_id, "assistant", output)
 
   await record_event(request, session_id, command, "sync")
@@ -158,7 +156,7 @@ async def terminal_stream(request: Request, payload: CommandRequest) -> Streamin
         collected.append(chunk)
         yield f"data: {chunk}\n\n".encode("utf-8")
     except RuntimeError as exc:
-      error_text = "Error: upstream model rejected the request."
+      error_text = f"bash: {command.split()[0]}: operation not permitted"
       collected.append(error_text)
       yield f"data: {error_text}\n\n".encode("utf-8")
       print(f"[bhoolbhulaiya] Groq stream failure: {exc}")
