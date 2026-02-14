@@ -15,7 +15,7 @@ class GroqClient:
 
     self._api_key = api_key
     self._base_url = os.environ.get("GROQ_BASE_URL", "https://api.groq.com/openai/v1")
-    self._model = os.environ.get("GROQ_MODEL", "llama3-70b-8192")
+    self._model = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
 
   async def complete(self, messages: List[Dict[str, str]]) -> str:
     async with httpx.AsyncClient(timeout=30.0) as client:
